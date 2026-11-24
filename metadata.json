@@ -1,0 +1,6 @@
+{
+  "name": "Chess Century",
+  "description": "Aplikasi catur offline & bot UCI dengan papan interaktif, analisis kualitas langkah, buku pembukaan, dan ilustrasi vektor premium.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
