@@ -23,6 +23,14 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: tools platform-tools platforms;android-35 build-tools;35.0.0
+
+      - name: Accept Android SDK Licenses
+        run: yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
       - name: Install dependencies & build web app
         run: |
           npm install --legacy-peer-deps
@@ -31,6 +39,9 @@ jobs:
       - name: Setup Capacitor Android
         run: |
           npm install --no-save --legacy-peer-deps @capacitor/core@^7.0.0 @capacitor/cli@^7.0.0 @capacitor/android@^7.0.0
+          if [ ! -f "capacitor.config.json" ] && [ ! -f "capacitor.config.ts" ]; then
+            npx cap init "Chess Century" "com.sepram.chesscentury" --web-dir dist
+          fi
           if [ ! -d "android" ]; then
             npx cap add android
           fi
@@ -39,11 +50,9 @@ jobs:
       - name: Compile Debug APK
         run: |
           cd android
-          if [ -n "$ANDROID_HOME" ]; then
-            echo "sdk.dir=$ANDROID_HOME" > local.properties
-          fi
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
